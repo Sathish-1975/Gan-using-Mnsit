@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+ENV/
+
+# PyTorch
+# generator.pth
+# discriminator.pth
+
+# Data
+data/
+samples/
+
+# Visualization
+loss_curve.png
+
+# IDEs
+.vscode/
+.idea/
+.gemini/

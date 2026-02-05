@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAN Image Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>GAN Image Generator</h1>
+        <p>Generative Adversarial Network for MNIST Digits</p>
+
+        <div class="display-area">
+            <div id="image-container" class="glass">
+                <p id="placeholder-text">Click "Generate" to see the magic!</p>
+                <img id="generated-image" src="" alt="Generated Digit" style="display: none;">
+            </div>
+        </div>
+
+        <div id="analytics-section" style="display: none;">
+            <h3>Prediction Analytics</h3>
+            <table class="analytics-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody id="metrics-body">
+                    <!-- Metrics will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <button id="generate-btn" class="btn">Generate New Digit</button>
+
+        <div id="loader" class="loader" style="display: none;"></div>
+    </div>
+
+    <script>
+        const generateBtn = document.getElementById('generate-btn');
+        const generatedImg = document.getElementById('generated-image');
+        const placeholderText = document.getElementById('placeholder-text');
+        const loader = document.getElementById('loader');
+
+        generateBtn.addEventListener('click', async () => {
+            // Show loader, hide image
+            loader.style.display = 'block';
+            generatedImg.style.display = 'none';
+            placeholderText.style.display = 'none';
+            generateBtn.disabled = true;
+
+            try {
+                const response = await fetch('/generate');
+                const data = await response.json();
+
+                if (data.image) {
+                    generatedImg.src = `data:image/png;base64,${data.image}`;
+                    generatedImg.style.display = 'block';
+
+                    // Populate Table
+                    const metricsBody = document.getElementById('metrics-body');
+                    const analyticsSection = document.getElementById('analytics-section');
+                    metricsBody.innerHTML = `
+                        <tr>
+                            <td>Discriminator Realness</td>
+                            <td><span class="badge">${data.metrics.realness}%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Latent Dimensions</td>
+                            <td>${data.metrics.latent_dim}</td>
+                        </tr>
+                        <tr>
+                            <td>Processing Device</td>
+                            <td>${data.metrics.device}</td>
+                        </tr>
+                    `;
+                    analyticsSection.style.display = 'block';
+                } else if (data.error) {
+                    alert(data.error);
+                    placeholderText.textContent = data.error;
+                    placeholderText.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while generating the image.');
+                placeholderText.textContent = "Error occurred.";
+                placeholderText.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

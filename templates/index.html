@@ -10,7 +10,7 @@
 
 <body>
     <div class="container">
-        <h1>GAN Image Generator</h1>
+        <h1>SATHISH GAN Image Generator</h1>
         <p>Generative Adversarial Network for MNIST Digits</p>
 
         <div class="display-area">
@@ -68,6 +68,14 @@
                         <tr>
                             <td>Discriminator Realness</td>
                             <td><span class="badge">${data.metrics.realness}%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Predicted Digit</td>
+                            <td><span class="badge secondary">${data.metrics.prediction}</span></td>
+                        </tr>
+                        <tr>
+                            <td>Classifier Confidence</td>
+                            <td><span class="badge">${data.metrics.classifier_confidence}%</span></td>
                         </tr>
                         <tr>
                             <td>Latent Dimensions</td>
